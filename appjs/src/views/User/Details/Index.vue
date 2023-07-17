@@ -7,8 +7,14 @@
           <img class="img-fluid" :src="user.avatar_url" />
         </div>
         <div class="p-3">
-          <strong><small>Seguidores:</small> </strong> <span class="float-end">{{ user.followers }}</span>
-          <strong><small>Seguindo:</small> </strong> <span class="float-end">{{ user.following }}</span>
+          <div>
+            <strong><small>Seguidores:</small></strong>
+            <span class="float-end">{{ user.followers }}</span>
+          </div>
+          <div>
+            <strong><small>Seguindo:</small></strong>
+            <span class="float-end">{{ user.following }}</span>
+          </div>
         </div>
         <p><small>{{ user.bio }}</small></p>
       </div>
@@ -50,8 +56,6 @@ export default defineComponent({
     const storeUser = useUserStore()
     const storeUserDetails = useUserDetailsStore()
     onMounted(() => {
-      console.log('mounted!')
-      console.log(props.login)
       storeUserDetails.fetch(props.login)
       storeUser.fetchUsers()
     })
