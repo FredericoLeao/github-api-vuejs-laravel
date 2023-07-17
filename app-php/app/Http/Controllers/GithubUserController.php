@@ -16,8 +16,11 @@ class GithubUserController extends Controller
             $githubUserData = $githubUserResponse->json();
             $filename = $githubUserData['login'].".json";
             Storage::disk('jsondb')->put($filename, json_encode($githubUserResponse->json()));
+            return response()->json(['error' => 0], 200);
         }
-
-        return $githubUserResponse->ok();
+        if ($githubUserResponse->status()) {
+            return response()->json(['error' => 1], $githubUserResponse->status());
+        }
+        return response()->json(['error' => 2], 400);
     }
 }

@@ -1,28 +1,32 @@
 <template>
   <div class="col-12">
     <div class="card">
-      <router-link :to="{ name: 'UserDetails', params: { login: user.login } }">
-        <div class="row">
-          <div class="col-sm-3">
+      <div class="row">
+        <div class="col-sm-3">
+          <router-link :to="{ name: 'UserDetails', params: { login: user.login } }">
             <img class="img-fluid" :src="user.avatar_url" />
-          </div>
-          <div class="col-sm-9">
-            <div class="card-body">
+          </router-link>
+        </div>
+        <div class="col-sm-9">
+          <div class="card-body">
+            <router-link :to="{ name: 'UserDetails', params: { login: user.login } }">
               <h5 class="card-title">{{ user.name }}</h5>
               <p class="card-text">
                 <small class="text-muted">Usuário desde {{ formatDate(user.created_at) }}</small>
                 <span class="float-end">{{ user.public_repos }}</span>
               </p>
-            </div>
+            </router-link>
+            <button class="btn btn-success" @click="save" v-if="!isSaved">Salvar no back-end</button>
           </div>
         </div>
-      </router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import axios from "axios"
+import { defineComponent, ref } from 'vue';
 import CommonMixin from '@/mixins/Common'
 
 export default defineComponent({
@@ -30,8 +34,13 @@ export default defineComponent({
   props: ["user"],
   mixins: [CommonMixin],
   setup (props) {
-    const user = props.user
-    return { user }
+    const user = ref(props.user)
+    const isSaved = ref(false)
+    const save = () => {
+      axios.post('http://localhost/api/salvar-local', { login: user.value.login })
+        .then(() => { isSaved.value = true })
+    }
+    return { isSaved, save, user }
   }
 })
 </script>
