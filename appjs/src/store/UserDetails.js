@@ -14,7 +14,7 @@ export const useUserDetailsStore = defineStore({
   actions: {
     fetch (ghUser) {
       if (Object.keys(this.userDetails).length > 0 || !ghUser) return
-      axios.get(`https://api.github.com/users/${ghUser}/repos`, { headers: { Authorization: 'Bearer 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' } })
+      axios.get(`https://api.github.com/users/${ghUser}/repos`)
         .then(response => {
           this.userDetails.repos = response.data
         })

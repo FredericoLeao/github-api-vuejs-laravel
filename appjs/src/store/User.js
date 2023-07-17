@@ -19,7 +19,7 @@ export const useUserStore = defineStore({
       if (this.users.length > 0) return
       const githubUsers = ["wallysonn", "diego3g", "filipedeschamps", "rmanguinho"]
       githubUsers.forEach((ghUser) => {
-        axios.get(`https://api.github.com/users/${ghUser}`, { headers: { Authorization: 'Bearer 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' } })
+        axios.get(`https://api.github.com/users/${ghUser}`)
           .then(response => {
             this.users.push(response.data)
           })
