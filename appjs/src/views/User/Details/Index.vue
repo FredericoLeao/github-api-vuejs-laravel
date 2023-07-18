@@ -23,7 +23,7 @@
       <div v-if="userDetails">
         <div class="row mb-2">
           <div class="col-6 offset-6">
-            <input type="text" class="form-control" v-model="textSearch" placeholder="Busca...">
+            <input type="text" class="form-control" v-model="textSearch" placeholder="Pesquisar...">
           </div>
         </div>
         <div class="row">
