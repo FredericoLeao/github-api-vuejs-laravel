@@ -21,8 +21,13 @@
     </div>
     <div class="col-sm-9">
       <div v-if="userDetails">
+        <div class="row mb-2">
+          <div class="col-6 offset-6">
+            <input type="text" class="form-control" v-model="textSearch">
+          </div>
+        </div>
         <div class="row">
-          <div class="col-sm-6 mb-3" v-for="(repo, idx) in userDetails.repos" :key="idx">
+          <div class="col-sm-6 mb-3" v-for="(repo, idx) in userRepos" :key="idx">
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">{{ repo.name }} <small class="float-end"><i class="bi bi-eye"></i> {{ repo.watchers }}</small></h5>
@@ -42,19 +47,18 @@
 </template>
 
 <script>
-import { computed, onMounted, defineComponent, defineProps } from 'vue';
+import { computed, onMounted, defineComponent, ref } from 'vue';
 import { useUserDetailsStore } from '@/store/UserDetails'
 import { useUserStore } from '@/store/User'
 import CommonMixin from '@/mixins/Common'
 
 export default defineComponent({
-  // useUserDetailsStore
-  // fetchUserDetails(login)
   mixins: [CommonMixin],
   props: ['login'],
   setup (props) {
     const storeUser = useUserStore()
     const storeUserDetails = useUserDetailsStore()
+    const textSearch = ref('')
     onMounted(() => {
       storeUserDetails.fetch(props.login)
       storeUser.fetchUsers()
@@ -68,7 +72,23 @@ export default defineComponent({
     const userDetails = computed(() => {
       return storeUserDetails.data
     })
-    return { storeUserDetails, storeUser, user, userDetails }
+    const userRepos = computed(() => {
+      if (userDetails.value) {
+        let searchArray = textSearch.value.toLowerCase().trim().replace(/  +/g, ' ').split(' ').filter((searchStr) => {
+          return searchStr.length >= 2
+        })
+        if (searchArray && searchArray.length > 0) {
+          return userDetails.value.repos.filter((userRepo) => {
+            return searchArray.filter((searchStr) => {
+              return userRepo.name.indexOf(searchStr) >= 0
+            }).length === searchArray.length
+          })
+        }
+        return userDetails.value.repos
+      }
+      return
+    })
+    return { storeUserDetails, storeUser, textSearch, user, userDetails, userRepos }
   }
 })
 </script>
